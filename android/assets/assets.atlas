@@ -1,0 +1,83 @@
+
+assets.png
+size: 728,1022
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+assets-border
+  rotate: false
+  xy: 2, 323
+  size: 608, 699
+  orig: 608, 699
+  offset: 0, 0
+  index: -1
+assets-menu
+  rotate: false
+  xy: 2, 238
+  size: 116, 83
+  orig: 116, 83
+  offset: 0, 0
+  index: -1
+assets-menu-pressed
+  rotate: false
+  xy: 612, 939
+  size: 116, 83
+  orig: 116, 83
+  offset: 0, 0
+  index: -1
+assets-timer-bg
+  rotate: false
+  xy: 2, 2
+  size: 28, 56
+  orig: 28, 56
+  offset: 0, 0
+  index: -1
+assets-timer-fg
+  rotate: false
+  xy: 120, 273
+  size: 28, 48
+  orig: 28, 48
+  offset: 0, 0
+  index: -1
+assets-tri-black
+  rotate: false
+  xy: 612, 763
+  size: 75, 85
+  orig: 75, 85
+  offset: 0, 0
+  index: -1
+assets-tri-blue
+  rotate: false
+  xy: 2, 149
+  size: 76, 87
+  orig: 76, 87
+  offset: 0, 0
+  index: -1
+assets-tri-green
+  rotate: false
+  xy: 612, 676
+  size: 75, 85
+  orig: 75, 85
+  offset: 0, 0
+  index: -1
+assets-tri-purple
+  rotate: false
+  xy: 612, 850
+  size: 76, 87
+  orig: 76, 87
+  offset: 0, 0
+  index: -1
+assets-tri-red
+  rotate: false
+  xy: 2, 60
+  size: 76, 87
+  orig: 76, 87
+  offset: 0, 0
+  index: -1
+assets-tri-yellow
+  rotate: false
+  xy: 612, 589
+  size: 75, 85
+  orig: 75, 85
+  offset: 0, 0
+  index: -1

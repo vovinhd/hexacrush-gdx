@@ -1,5 +1,7 @@
 package io.github.vovinhd.hexacrush;
 
+import io.github.vovinhd.hexacrush.screens.GameScreen;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;

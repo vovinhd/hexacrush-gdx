@@ -7,7 +7,6 @@ import java.util.Random;
 
 public enum Tile {
 	RED, GREEN, PURPLE, YELLOW, BLACK, BLUE;
-
 	private static final List<Tile> VALUES = Collections
 			.unmodifiableList(Arrays.asList(values()));
 	private static final int SIZE = VALUES.size();

@@ -1,29 +1,28 @@
 package io.github.vovinhd.hexacrush.simulation;
 
 public class TriCoords {
+	
+	public static final int LEFT = 0; 
+	public static final int RIGHT = 1; 
+	
 	private int x; 
 	private int y; 
-	private Side s;
-	
-	public enum Side{
-		LEFT,
-		RIGHT
-	}
+	private int side;
 	
 	public TriCoords(){ 
 		
 	}
 	
-	public TriCoords(int x, int y, Side s) {
+	public TriCoords(int x, int y, int side) {
 		this.x = x; 
 		this.y = y; 
-		this.s = s; 
+		this.setSide(side); 
 	}
 	
 	public TriCoords(TriCoords c) { 
 		this.x = c.getX(); 
 		this.y = c.getY(); 
-		this.s = c.getS(); 
+		this.setSide(c.getSide()); 
 	}
 
 	public int getX() {
@@ -42,12 +41,12 @@ public class TriCoords {
 		this.y = y;
 	}
 
-	public Side getS() {
-		return s;
+	public int getSide() {
+		return side;
 	}
 
-	public void setS(Side s) {
-		this.s = s;
+	public void setSide(int side) {
+		this.side = side;
 	}
 
 	
