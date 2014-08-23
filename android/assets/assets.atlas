@@ -1,6 +1,6 @@
 
 assets.png
-size: 728,1022
+size: 959,1022
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -34,14 +34,21 @@ assets-timer-bg
   index: -1
 assets-timer-fg
   rotate: false
-  xy: 120, 273
+  xy: 80, 188
   size: 28, 48
   orig: 28, 48
   offset: 0, 0
   index: -1
 assets-tri-black
   rotate: false
-  xy: 612, 763
+  xy: 612, 496
+  size: 75, 85
+  orig: 75, 85
+  offset: 0, 0
+  index: -1
+assets-tri-black-flop
+  rotate: false
+  xy: 612, 409
   size: 75, 85
   orig: 75, 85
   offset: 0, 0
@@ -53,30 +60,65 @@ assets-tri-blue
   orig: 76, 87
   offset: 0, 0
   index: -1
-assets-tri-green
-  rotate: false
-  xy: 612, 676
-  size: 75, 85
-  orig: 75, 85
-  offset: 0, 0
-  index: -1
-assets-tri-purple
+assets-tri-blue-flop
   rotate: false
   xy: 612, 850
   size: 76, 87
   orig: 76, 87
   offset: 0, 0
   index: -1
-assets-tri-red
+assets-tri-green
+  rotate: false
+  xy: 612, 322
+  size: 75, 85
+  orig: 75, 85
+  offset: 0, 0
+  index: -1
+assets-tri-green-flop
+  rotate: false
+  xy: 730, 937
+  size: 75, 85
+  orig: 75, 85
+  offset: 0, 0
+  index: -1
+assets-tri-purple
   rotate: false
   xy: 2, 60
   size: 76, 87
   orig: 76, 87
   offset: 0, 0
   index: -1
+assets-tri-purple-flop
+  rotate: false
+  xy: 612, 761
+  size: 76, 87
+  orig: 76, 87
+  offset: 0, 0
+  index: -1
+assets-tri-red
+  rotate: false
+  xy: 612, 672
+  size: 76, 87
+  orig: 76, 87
+  offset: 0, 0
+  index: -1
+assets-tri-red-flop
+  rotate: false
+  xy: 612, 583
+  size: 76, 87
+  orig: 76, 87
+  offset: 0, 0
+  index: -1
 assets-tri-yellow
   rotate: false
-  xy: 612, 589
+  xy: 807, 937
+  size: 75, 85
+  orig: 75, 85
+  offset: 0, 0
+  index: -1
+assets-tri-yellow-flop
+  rotate: false
+  xy: 884, 937
   size: 75, 85
   orig: 75, 85
   offset: 0, 0

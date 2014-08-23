@@ -1,181 +1,50 @@
 package io.github.vovinhd.hexacrush.screens;
 
-import io.github.vovinhd.hexacrush.service.AssetService;
-import io.github.vovinhd.hexacrush.simulation.GameState;
-import io.github.vovinhd.hexacrush.simulation.Simulation;
-import io.github.vovinhd.hexacrush.simulation.Tile;
-import io.github.vovinhd.hexacrush.simulation.TriCoords;
-import io.github.vovinhd.hexacrush.simulation.TriGrid;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Matrix3;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class GameScreen extends ScreenAdapter {
 
-	private static final float TRI_SIZE = 70;
-
-	private Simulation simulation = new Simulation(); 
 	
-	private Matrix3 rotate45; 
-	private int gridX; 
-	private int gridY; 
-	private int triSideLength; 
-	float sqrt2 = (float) (1/Math.sqrt(2)); 
-	
-	
-	Vector2 shearVecX = new Vector2(sqrt2, sqrt2); 
-	Vector2 shearVexY = new Vector2(-sqrt2, sqrt2); 
-	
+	private Stage stage;
+	private Viewport viewport; 
 	private SpriteBatch batch; 
-	private OrthographicCamera camera; 
 
-	private TextureAtlas atlas = AssetService.getInstance().getTextureAtlas(); 	
-	private TextureRegion redTri; 
-	private TextureRegion blueTri; 
-	private TextureRegion yellowTri; 
-	private TextureRegion purpleTri; 
-	private TextureRegion greenTri; 
-	private TextureRegion blackTri; 
-	private TextureRegion background;
-	private ImageButton menu; 
-	
 	@Override
 	public void render(float delta) {
-		Gdx.graphics.getGL20().glClearColor( 0, 0, 0, 1 );
-		Gdx.graphics.getGL20().glClear( GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT );
-
-		simulation.act(null); //TODO replace with logic 
-		GameState state = simulation.getGameState(); 
-		TriGrid triGrid = state.getTileGrid(); 
-		Tile[][][] grid = triGrid.getGrid();
-		batch.begin();
-		for (int u = 0; u < triGrid.getSize(); u++) {
-			for (int v = 0; v < triGrid.getSize(); v++) {
-				Tile[] cell = grid[u][v]; 
-				if(cell[TriCoords.LEFT] != null) { 
-					renderTri(u, v, true, cell[TriCoords.LEFT]);
-				}
-				if(cell[TriCoords.RIGHT] != null) { 
-					renderTri(u, v, false, cell[TriCoords.RIGHT]);
-				}
-			}
-		}
-		batch.end();
-		
+		// TODO Auto-generated method stub
 		super.render(delta);
 	}
 
-	private Matrix3 gridTransform(){
-		Matrix3 transform = new Matrix3(); 
-		
-		//init
-		transform.idt();
-		transform.translate(new Vector2(gridX, gridY)); 
-
-		//rotate sharp end to top 
-		//transform.rotate(90f); 
-
-		
-		//shear 45°, scale to size 
-		transform.mul(new Matrix3(
-			new float[] {
-				 sqrt2, sqrt2, 0.0f,
-				-sqrt2, sqrt2, 0.0f,
-				 0.0f,   0.0f, 1.0f
-			}
-		));
-		
-		
-		////translate to grid origin
-		
-		return transform; 
-	}
-	
-	private void renderTri(int u, int v, boolean flip, Tile t) {
-		float rotation = flip ? 90 : 270; 
-
-		Vector2 pos = new Vector2(); 
-		pos.x = u; 
-		pos.y = v; 
-		pos = pos.scl(TRI_SIZE); 
-				
-		pos = pos.mul(gridTransform()); 
-		
-		Gdx.app.log("Pos", pos.toString());
-		
-		switch(t) {
-		case RED: 
-			batch.draw(redTri, pos.x, pos.y, 0, 0, 70, 70, 1, 1, rotation, true); 
-			break; 
-		case YELLOW: 
-			batch.draw(yellowTri, pos.x, pos.y, 0, 0, 70, 70, 1, 1, rotation, true); 
-			break; 
-		case PURPLE: 
-			batch.draw(purpleTri, pos.x, pos.y, 0, 0, 70, 70, 1, 1, rotation, true); 
-			break; 
-		case GREEN: 
-			batch.draw(greenTri, pos.x, pos.y, 0, 0, 70, 70, 1, 1, rotation, true); 
-			break; 
-		case BLUE: 
-			batch.draw(blueTri, pos.x, pos.y, 0, 0, 70, 70, 1, 1, rotation, true); 
-			break; 
-		case BLACK: 
-			batch.draw(blackTri, pos.x, pos.y, 0, 0, 70, 70, 1, 1, rotation, true); 
-			break; 
-		default: 
-			Gdx.app.log("WAT", "WAT");
-		}
+	@Override
+	public void resize(int width, int height) {
+		// TODO Auto-generated method stub
+		super.resize(width, height);
 	}
 
 	@Override
 	public void show() {
-		
-		//init sprites and ui 
-		redTri = atlas.findRegion("assets-tri-red"); 
-		blueTri = atlas.findRegion("assets-tri-blue"); 
-		yellowTri = atlas.findRegion("assets-tri-yellow"); 
-		purpleTri = atlas.findRegion("assets-tri-purple"); 
-		greenTri = atlas.findRegion("assets-tri-green"); 
-		blackTri = atlas.findRegion("assets-tri-black"); 
-		background = atlas.findRegion("assets-border");
-		
-		menu = new ImageButton (new SpriteDrawable(atlas.createSprite("assets-menu")),
-				new SpriteDrawable(atlas.createSprite("assets-menu-pressed"))); 
-		
-		//init render context 
+		viewport = new ScreenViewport(); 
 		batch = new SpriteBatch(); 
-		camera = new OrthographicCamera(); 
-		rotate45 = new Matrix3(); 
-		rotate45.setToRotation(135); 
-		gridX = Gdx.graphics.getWidth() / 2;
-		gridY = Gdx.graphics.getHeight() / 8;  
-			
+		stage = new Stage(viewport, batch); 
 		super.show();
 	}
 
-	public TextureRegion createTri(String texname, boolean flip) {
-		 TextureRegion region = atlas.findRegion(texname); 
-		 region.flip(flip, false);
-		 return region;
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		super.resume();
 	}
-	
+
 	@Override
 	public void dispose() {
-		atlas.dispose();
-		batch.dispose();
+		// TODO Auto-generated method stub
 		super.dispose();
-	}
+	} 
+	
 	
 	
 }
