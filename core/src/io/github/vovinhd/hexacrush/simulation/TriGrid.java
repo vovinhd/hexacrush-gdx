@@ -1,5 +1,7 @@
 package io.github.vovinhd.hexacrush.simulation;
 
+import java.util.Arrays;
+
 public class TriGrid {
 
 	
@@ -22,8 +24,9 @@ public class TriGrid {
 	 * All tiles beyond that are outside of the hex-area and are completely filled with Tile.DISABLED 
 	 */
 	private Tile[] createGridEntry(int x, int y, int size) { 
-		boolean rOut = ((x + 1) / size >= size / 2)||(y / size >= size / 2); 
-		boolean lOut = (x / size >= size / 2)||((y + 1)/ size >= size / 2);
+		boolean rOut = (Math.abs(x - y ) >= (size + 1) / 2);
+		boolean lOut = (Math.abs(x - y) >= (size + 1) / 2);
+		
 		Tile l = (lOut ? null : Tile.random()); 
 		Tile r = (rOut ? null : Tile.random()); 
 		return new Tile[] {l,r}; 
@@ -55,8 +58,13 @@ public class TriGrid {
 	public void setGrid(Tile[][][] grid) {
 		this.grid = grid;
 	}
-	
-	
+
+
+	@Override
+	public String toString() {
+		return "TriGrid [grid=" + Arrays.deepToString(grid) + ", size=" + size
+				+ "]";
+	}
 	
 
 }

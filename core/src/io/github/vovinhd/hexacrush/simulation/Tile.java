@@ -15,4 +15,10 @@ public enum Tile {
 	public static Tile random() {
 		return VALUES.get(RANDOM.nextInt(SIZE));
 	}
+
+	@Override
+	public String toString() {
+		return this.name().toString(); 
+	}
+	
 }

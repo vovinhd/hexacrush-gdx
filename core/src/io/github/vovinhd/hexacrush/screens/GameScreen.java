@@ -23,6 +23,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class GameScreen extends ScreenAdapter {
 
+	private static final float TRI_SIZE = 70;
+
 	private Simulation simulation = new Simulation(); 
 	
 	private Matrix3 rotate45; 
@@ -30,6 +32,8 @@ public class GameScreen extends ScreenAdapter {
 	private int gridY; 
 	private int triSideLength; 
 	float sqrt2 = (float) (1/Math.sqrt(2)); 
+	
+	
 	Vector2 shearVecX = new Vector2(sqrt2, sqrt2); 
 	Vector2 shearVexY = new Vector2(-sqrt2, sqrt2); 
 	
@@ -55,7 +59,6 @@ public class GameScreen extends ScreenAdapter {
 		GameState state = simulation.getGameState(); 
 		TriGrid triGrid = state.getTileGrid(); 
 		Tile[][][] grid = triGrid.getGrid();
-		
 		batch.begin();
 		for (int u = 0; u < triGrid.getSize(); u++) {
 			for (int v = 0; v < triGrid.getSize(); v++) {
@@ -73,15 +76,44 @@ public class GameScreen extends ScreenAdapter {
 		super.render(delta);
 	}
 
+	private Matrix3 gridTransform(){
+		Matrix3 transform = new Matrix3(); 
+		
+		//init
+		transform.idt();
+		transform.translate(new Vector2(gridX, gridY)); 
+
+		//rotate sharp end to top 
+		//transform.rotate(90f); 
+
+		
+		//shear 45°, scale to size 
+		transform.mul(new Matrix3(
+			new float[] {
+				 sqrt2, sqrt2, 0.0f,
+				-sqrt2, sqrt2, 0.0f,
+				 0.0f,   0.0f, 1.0f
+			}
+		));
+		
+		
+		////translate to grid origin
+		
+		return transform; 
+	}
+	
 	private void renderTri(int u, int v, boolean flip, Tile t) {
 		float rotation = flip ? 90 : 270; 
 
 		Vector2 pos = new Vector2(); 
-		pos.x = gridX; 
-		pos.y = gridY; 
+		pos.x = u; 
+		pos.y = v; 
+		pos = pos.scl(TRI_SIZE); 
 				
-		pos.x += 70 * (u * shearVecX.x + shearVexY.x * v);
-		pos.y += 70 * (u * shearVecX.y + shearVexY.y * v); 
+		pos = pos.mul(gridTransform()); 
+		
+		Gdx.app.log("Pos", pos.toString());
+		
 		switch(t) {
 		case RED: 
 			batch.draw(redTri, pos.x, pos.y, 0, 0, 70, 70, 1, 1, rotation, true); 
@@ -126,8 +158,8 @@ public class GameScreen extends ScreenAdapter {
 		camera = new OrthographicCamera(); 
 		rotate45 = new Matrix3(); 
 		rotate45.setToRotation(135); 
-		gridX = Gdx.graphics.getWidth() / 2; 
-		gridY = Gdx.graphics.getHeight() / 4; 
+		gridX = Gdx.graphics.getWidth() / 2;
+		gridY = Gdx.graphics.getHeight() / 8;  
 			
 		super.show();
 	}
