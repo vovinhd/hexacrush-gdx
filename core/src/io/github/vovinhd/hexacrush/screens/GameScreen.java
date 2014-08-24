@@ -1,13 +1,7 @@
 package io.github.vovinhd.hexacrush.screens;
 
-import io.github.vovinhd.hexacrush.simulation.Simulation;
-import io.github.vovinhd.hexacrush.simulation.Tile;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -15,20 +9,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class GameScreen extends ScreenAdapter {
 
 	
-	private static final int TRI_SIZE = 70;
-	private static final Vector2 TRI_FIELD_OFFSET = new Vector2(Gdx.graphics.getWidth() /2,Gdx.graphics.getHeight() /2);
+	private Stage stage;
 	private Viewport viewport; 
 	private SpriteBatch batch; 
-	private Simulation simulation; 
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		Gdx.gl20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		
-		simulation.act(delta);
-		simulation.draw();
-		
+		// TODO Auto-generated method stub
 		super.render(delta);
 	}
 
@@ -36,12 +23,9 @@ public class GameScreen extends ScreenAdapter {
 	public void show() {
 		viewport = new ScreenViewport(); 
 		batch = new SpriteBatch(); 
-		simulation = new Simulation(viewport, batch); 
-				
+		stage = new Stage(viewport, batch); 
 		super.show();
 	}
-
-	
 
 	@Override
 	public void resume() {

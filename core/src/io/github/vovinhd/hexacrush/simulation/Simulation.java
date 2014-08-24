@@ -1,21 +1,10 @@
 package io.github.vovinhd.hexacrush.simulation;
 
-import io.github.vovinhd.hexacrush.graphics.TileActor;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.Viewport;
-
-public class Simulation extends Stage {
+public class Simulation {
 	
 	private volatile GameState gameState; 
-	private CoordinateGrid grid; 
-	private int gridSize = 8;
-	private int triSideLength = 70; 
-	private Vector2 offset = new Vector2(0.0f,0.0f); 
 	
-	
+<<<<<<< HEAD
 	public Simulation(Viewport viewport, SpriteBatch batch){ 
 		super(viewport, batch); 
 		this.gameState = new GameState(15f, gridSize); 
@@ -25,11 +14,14 @@ public class Simulation extends Stage {
 			this.addActor(new TileActor(coord, Tile.random()));
 		}
 		
+=======
+	public Simulation(){ 
+		this.gameState = new GameState(15f); 
+>>>>>>> parent of e2cd7e9... New Graphics stack ftw
 	}
 	
-	@Override
-	public void act(float delta) {
-		super.act(delta); 
+	public void act(SimulationEvent e) {
+		
 	}
 
 	public GameState getGameState() {

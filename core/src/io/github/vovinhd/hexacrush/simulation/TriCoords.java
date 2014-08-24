@@ -49,11 +49,5 @@ public class TriCoords {
 		this.side = side;
 	}
 
-	@Override
-	public String toString() {
-		return "TriCoords [x=" + x + ", y=" + y + ", side=" + side + "]";
-	}
-
-	
 	
 }

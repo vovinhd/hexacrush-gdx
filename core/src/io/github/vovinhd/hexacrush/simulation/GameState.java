@@ -8,9 +8,9 @@ public class GameState {
 	private float time  = 0.0f; 
 	private boolean paused = false;
 	
-	public GameState(float timePerTurn, int gridSize) {
+	public GameState(float timePerTurn) {
 		this.timePerTurn = timePerTurn; 
-		this.tileGrid = new TriGrid(gridSize); 
+		this.tileGrid = new TriGrid(8); 
 	}
 	public TriGrid getTileGrid() {
 		return tileGrid;
