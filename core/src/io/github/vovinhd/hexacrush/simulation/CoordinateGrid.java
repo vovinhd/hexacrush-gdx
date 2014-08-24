@@ -3,6 +3,7 @@ package io.github.vovinhd.hexacrush.simulation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import static io.github.vovinhd.hexacrush.simulation.TriCoords.*;
 
 public class CoordinateGrid {
 	
@@ -12,28 +13,25 @@ public class CoordinateGrid {
 	private Array<TriCoords> positions; 
 	private int triSideLength; 
 	private Vector2 offset; 
-	private int gridSize;
+	private GameState state; 
 	 
-	public CoordinateGrid(int triSideLength, Vector2 offset, int gridSize) {
+	public CoordinateGrid(int triSideLength, Vector2 offset, GameState state) {
 		this.triSideLength = triSideLength; 
 		this.offset = offset; 
-		this.gridSize = gridSize; 
-		
+		this.state = state;
 		this.positions = recalculatePositions(); 
-		Gdx.app.log("Coordi"
-				+ "nates", positions.toString());
+		Gdx.app.log("Coordinates", positions.toString());
 	}
 	
 	private Array<TriCoords> recalculatePositions() {
 		Array<TriCoords> positions = new Array<TriCoords>(); 
-		
-		for (int u = 0; u < this.gridSize; u++) {
+		int size = this.state.getTileGrid().getSize();
+		Tile[][][] grid = this.state.getTileGrid().getGrid(); 
+		for (int u = 0; u < size; u++) {
 			Vector2 baseLine = new Vector2(u * triSideLength * cos45, u * triSideLength * sin45); 
-			for (int v = 0; v < this.gridSize; v++) {
-				TriCoords left = new TriCoords(u * triSideLength, v * triSideLength, TriCoords.LEFT);
-				TriCoords right = new TriCoords(u* triSideLength, v * triSideLength + triSideLength / 2,TriCoords.RIGHT);
-				positions.add(left);
-				positions.add(right);
+			for (int v = 0; v < size; v++) {
+				if(grid[u][v][LEFT] != null) positions.add(new TriCoords(u * triSideLength, v * triSideLength, TriCoords.LEFT)); 
+				if(grid[u][v][RIGHT] != null) positions.add(new TriCoords(u* triSideLength, v * triSideLength + triSideLength / 2,TriCoords.RIGHT)); 
 			}
 		}
 		
@@ -65,11 +63,6 @@ public class CoordinateGrid {
 	}
 
 	public int getGridSize() {
-		return gridSize;
+		return this.state.getTileGrid().getSize();
 	}
-
-	public void setGridSize(int gridSize) {
-		this.gridSize = gridSize;
-	}
-
 }

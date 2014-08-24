@@ -33,12 +33,6 @@ public class GameScreen extends ScreenAdapter {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		super.resize(width, height);
-	}
-
-	@Override
 	public void show() {
 		viewport = new ScreenViewport(); 
 		batch = new SpriteBatch(); 
@@ -57,7 +51,8 @@ public class GameScreen extends ScreenAdapter {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		batch.dispose();
+		simulation.dispose();
 		super.dispose();
 	} 
 	

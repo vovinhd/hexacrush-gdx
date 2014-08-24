@@ -19,7 +19,7 @@ public class Simulation extends Stage {
 	public Simulation(Viewport viewport, SpriteBatch batch){ 
 		super(viewport, batch); 
 		this.gameState = new GameState(15f, gridSize); 
-		this.grid = new CoordinateGrid(triSideLength, offset, gridSize); 
+		this.grid = new CoordinateGrid(triSideLength, offset, gameState); 
 		
 		for (TriCoords coord : grid.getPositions()) {
 			this.addActor(new TileActor(coord, Tile.random()));
