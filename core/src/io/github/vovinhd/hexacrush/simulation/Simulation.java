@@ -8,7 +8,7 @@ public class Simulation {
 	public Simulation(Viewport viewport, SpriteBatch batch){ 
 		super(viewport, batch); 
 		this.gameState = new GameState(15f, gridSize); 
-		this.grid = new CoordinateGrid(triSideLength, offset, gameState); 
+		this.grid = new CoordinateGrid(triSideLength, offset, gridSize); 
 		
 		for (TriCoords coord : grid.getPositions()) {
 			this.addActor(new TileActor(coord, Tile.random()));
