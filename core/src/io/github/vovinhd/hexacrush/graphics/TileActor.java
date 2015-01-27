@@ -5,12 +5,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+
 public class TileActor extends Actor {
 	private Sprite tileSprite; 
 	private boolean flip = false; 
 	
 	public TileActor(Sprite sprite) { 
-		this.tileSprite = new Sprite(sprite); 
+		this.tileSprite = new Sprite(sprite);
+        this.setSize(tileSprite.getWidth(), tileSprite.getHeight());
 	}
 	
 	public TileActor(Sprite sprite, boolean flip) { 
