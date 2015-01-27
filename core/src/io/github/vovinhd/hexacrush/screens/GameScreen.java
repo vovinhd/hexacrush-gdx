@@ -1,50 +1,60 @@
 package io.github.vovinhd.hexacrush.screens;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.vovinhd.hexacrush.graphics.TileActor;
+import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
+import io.github.vovinhd.hexacrush.simulation.GameState;
+import io.github.vovinhd.hexacrush.simulation.Tile;
+import io.github.vovinhd.hexacrush.simulation.TriCoords;
+import io.github.vovinhd.hexacrush.simulation.TriGrid;
+
 public class GameScreen extends ScreenAdapter {
 
-	
-	private Stage stage;
-	private Viewport viewport; 
-	private SpriteBatch batch; 
+    private Viewport viewport;
+    private SpriteBatch batch;
 
-	@Override
-	public void render(float delta) {
-		// TODO Auto-generated method stub
-		super.render(delta);
-	}
+    private GameState gameState;
+    private TriGrid triGrid;
+    private Stage stage;
 
-	@Override
-	public void resize(int width, int height) {
-		// TODO Auto-generated method stub
-		super.resize(width, height);
-	}
+    @Override
+    public void show() {
+        viewport = new ScreenViewport();
+        batch = new SpriteBatch();
+        stage = new Stage(viewport,batch);
 
-	@Override
-	public void show() {
-		viewport = new ScreenViewport(); 
-		batch = new SpriteBatch(); 
-		stage = new Stage(viewport, batch); 
-		super.show();
-	}
+        //TODO decide which asset size to use
+        TileActor ref =  TileActorFactory.generate(Tile.RED, TriCoords.LEFT);
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
-		super.resume();
-	}
+        stage.addActor(ref);
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		super.dispose();
-	} 
-	
-	
-	
+        gameState = new GameState(15, ref);
+
+        //Setup Screen/UI
+
+
+
+        //fill field
+        triGrid = new TriGrid(gameState.getCoordinates());
+        for (TileActor t : triGrid.getTris()) {
+            Gdx.app.log("Actor","x: " + t.getX() + " y: " + t.getY() );
+            stage.addActor(t);
+        }
+
+        Gdx.input.setInputProcessor(stage);
+    }
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(delta);
+        stage.draw();
+    }
+
 }

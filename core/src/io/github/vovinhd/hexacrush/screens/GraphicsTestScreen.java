@@ -1,12 +1,13 @@
 package io.github.vovinhd.hexacrush.screens;
 
-import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -18,44 +19,30 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.Gdx;
 
 import io.github.vovinhd.hexacrush.graphics.TileActor;
 import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
 import io.github.vovinhd.hexacrush.simulation.Tile;
 import io.github.vovinhd.hexacrush.simulation.TriCoords;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 
-import java.text.ParseException;
-
-public class GraphicsTestScreen extends ScreenAdapter{
+public class GraphicsTestScreen extends ScreenAdapter {
 
     static final float scaleFactor = 2.5f;
-
+    TileActor size = TileActorFactory.generate(Tile.RED, TriCoords.RIGHT);
+    TextButton applyButton, removeButton;
+    Label labelGridSize, labelLStart, labelRStart, labelLCutOff, labelRCCutOff;
+    TextField tfGridSize, tfLStart, tfRStart, tfLCutOff, tfRCCutOff;
+    Table table;
+    Array tris;
+    int x_offset = 0;
+    int y_offset = 0;
+    int intersectHeight = (int) size.getHeight() / 2;
+    Skin skin;
     //Housekeeping
     private Stage stage;
     private Viewport viewport;
     private SpriteBatch batch;
     private ShapeRenderer sr;
-
-
-
-    TileActor size = TileActorFactory.generate(Tile.RED, TriCoords.RIGHT);
-
-    TextButton applyButton, removeButton;
-    Label labelGridSize, labelLStart, labelRStart, labelLCutOff, labelRCCutOff;
-    TextField tfGridSize, tfLStart, tfRStart, tfLCutOff, tfRCCutOff;
-
-    Table table;
-
-    Array tris;
-
-    int x_offset = 0;
-    int y_offset = 0;
-    int intersectHeight = (int) size.getHeight() / 2;
-
-    Skin skin;
-
     private int distance = 90;
 
     @Override
@@ -72,7 +59,7 @@ public class GraphicsTestScreen extends ScreenAdapter{
         skin.add("default-font", defaultFont, BitmapFont.class);
         table = new Table();
         tris = new Array<Actor>();
-        applyButton = new TextButton("apply",skin.get(TextButton.TextButtonStyle.class));
+        applyButton = new TextButton("apply", skin.get(TextButton.TextButtonStyle.class));
         removeButton = new TextButton("remove", skin.get(TextButton.TextButtonStyle.class));
         removeButton.addListener(new ClickListener() {
             @Override
@@ -90,7 +77,7 @@ public class GraphicsTestScreen extends ScreenAdapter{
                     int lCutOff = Integer.parseInt(tfLCutOff.getText());
                     int rCutOff = Integer.parseInt(tfRCCutOff.getText());
 
-                    if(tris.size > 0) {
+                    if (tris.size > 0) {
                         clearTris();
                     }
 
@@ -116,9 +103,6 @@ public class GraphicsTestScreen extends ScreenAdapter{
         tfRStart = new TextField("5", skin);
         tfLCutOff = new TextField("11", skin);
         tfRCCutOff = new TextField("12", skin);
-
-
-
 
 
         table.add(labelGridSize);
@@ -198,7 +182,7 @@ public class GraphicsTestScreen extends ScreenAdapter{
                 y_offset += size.getHeight() / 2;
                 x_offset += size.getWidth();
 
-                if ( i + j >= lStart && i + j <= lCutOff) {
+                if (i + j >= lStart && i + j <= lCutOff) {
                     TileActor actor_l = TileActorFactory.generate(Tile.BLUE, TriCoords.LEFT);
                     actor_l.setPosition(x_offset, y_offset + intersectHeight);
                     stage.addActor(actor_l);
@@ -210,7 +194,7 @@ public class GraphicsTestScreen extends ScreenAdapter{
                     tris.add(actor_l);
                 } */
 
-                if ( i + j >= rStart && i + j <= rCutOff) {
+                if (i + j >= rStart && i + j <= rCutOff) {
                     TileActor actor_r = TileActorFactory.generate(Tile.BLUE, TriCoords.RIGHT);
                     actor_r.setPosition(x_offset, y_offset);
                     stage.addActor(actor_r);
@@ -240,7 +224,7 @@ public class GraphicsTestScreen extends ScreenAdapter{
     }
 
     @Override
-    public void render(float delta){
+    public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
@@ -248,7 +232,7 @@ public class GraphicsTestScreen extends ScreenAdapter{
         sr.setProjectionMatrix(batch.getProjectionMatrix());
         for (Actor a : stage.getActors()) {
             sr.begin(ShapeRenderer.ShapeType.Line);
-            sr.setColor(new Color(1,0,0,0));
+            sr.setColor(new Color(1, 0, 0, 0));
             sr.rect(a.getX(), a.getY(), a.getWidth(), a.getHeight());
             sr.end();
         }

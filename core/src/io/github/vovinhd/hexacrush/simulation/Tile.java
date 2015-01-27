@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Random;
 
 public enum Tile {
-	RED, GREEN, PURPLE, YELLOW, BLACK, BLUE;
-	private static final List<Tile> VALUES = Collections
-			.unmodifiableList(Arrays.asList(values()));
-	private static final int SIZE = VALUES.size();
-	private static final Random RANDOM = new Random();
+    RED, GREEN, PURPLE, YELLOW, BLACK, BLUE;
+    private static final List<Tile> VALUES = Collections
+            .unmodifiableList(Arrays.asList(values()));
+    private static final int SIZE = VALUES.size();
+    private static final Random RANDOM = new Random();
 
-	public static Tile random() {
-		return VALUES.get(RANDOM.nextInt(SIZE));
-	}
+    public static Tile random() {
+        return VALUES.get(RANDOM.nextInt(SIZE));
+    }
 
-	@Override
-	public String toString() {
-		return this.name().toString(); 
-	}
-	
+    @Override
+    public String toString() {
+        return this.name().toString();
+    }
+
 }

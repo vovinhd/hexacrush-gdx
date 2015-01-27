@@ -1,7 +1,5 @@
 package io.github.vovinhd.hexacrush.simulation;
 
-import com.badlogic.gdx.math.Vector2;
-
 /**
  * Created by vovin on 27.01.15.
  */

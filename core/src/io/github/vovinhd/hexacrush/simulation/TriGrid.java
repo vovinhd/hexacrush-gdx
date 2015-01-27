@@ -1,70 +1,49 @@
 package io.github.vovinhd.hexacrush.simulation;
 
-import java.util.Arrays;
+import com.badlogic.gdx.utils.Array;
+
+import io.github.vovinhd.hexacrush.graphics.TileActor;
+import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
 
 public class TriGrid {
 
-	
-	private Tile[][][] grid; 
-	private final int size; 
-	
-	public TriGrid(int size) {
-		this.size = size; 
-		grid = new Tile[size][size][2]; 
-		for(int i = 0; i < size; i++) {
-			for(int j = 0; j < size; j++) {
-				grid[i][j] = createGridEntry(i,j,size); 
-			}
-		}
-	}
-	
+    int gridSize;
+    Array<TileActor> tris = new Array<TileActor>();
 
-	/** 
-	 * Creates the tiles. Tiles with an index of (size + 1) / 2 lay on the border of the hexagonal shape, so only one of their fields is filled.
-	 * All tiles beyond that are outside of the hex-area and are completely filled with Tile.DISABLED 
-	 */
-	private Tile[] createGridEntry(int x, int y, int size) { 
-		boolean rOut = (Math.abs(x - y ) >= (size + 1) / 2);
-		boolean lOut = (Math.abs(x - y) >= (size + 1) / 2);
-		
-		Tile l = (lOut ? null : Tile.random()); 
-		Tile r = (rOut ? null : Tile.random()); 
-		return new Tile[] {l,r}; 
-	}
-	
+    public TriGrid(CoordinateGrid coords) {
+        int gridSize = coords.getGridSize();
+        int triHeight = coords.getTriSideLength();
+        int triWidth = triHeight * (int) Math.sin(Math.toRadians(60));
+        for (TriPair triPair : coords.getPositions()) {
+            Tile leftT = Tile.random();
+            Tile rightT = Tile.random();
+            if (triPair.getLeft() != null) {
+                TileActor leftTA = TileActorFactory.generate(leftT, TriCoords.LEFT);
+                leftTA.setPosition(triPair.getLeft().getX(), triPair.getLeft().getY());
+                tris.add(leftTA);
+            }
 
-	
-	public Tile getTile(TriCoords c) { 
-		return getTile(c.getX(), c.getY(), c.getSide()); 
-	}
+            if (triPair.getRight() != null) {
+                TileActor rightTA = TileActorFactory.generate(rightT, TriCoords.RIGHT);
+                rightTA.setPosition(triPair.getRight().getX(), triPair.getRight().getY());
+                tris.add(rightTA);
+            }
+        }
+    }
 
+    public int getGridSize() {
+        return gridSize;
+    }
 
+    public void setGridSize(int gridSize) {
+        this.gridSize = gridSize;
+    }
 
-	public Tile getTile(int x, int y, int side) {
-		return grid[x][y][side];
-	}
+    public Array<TileActor> getTris() {
+        return tris;
+    }
 
-
-	public int getSize() {
-		return size;
-	}
-
-
-	public Tile[][][] getGrid() {
-		return grid;
-	}
-
-
-	public void setGrid(Tile[][][] grid) {
-		this.grid = grid;
-	}
-
-
-	@Override
-	public String toString() {
-		return "TriGrid [grid=" + Arrays.deepToString(grid) + ", size=" + size
-				+ "]";
-	}
-	
-
+    public void setTris(Array<TileActor> tris) {
+        this.tris = tris;
+    }
 }
