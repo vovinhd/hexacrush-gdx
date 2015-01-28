@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 
 import io.github.vovinhd.hexacrush.graphics.TileActor;
+import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
 
 public class GameState {
 
@@ -14,8 +15,8 @@ public class GameState {
     private float time = 0.0f;
     private boolean paused = false;
 
-    public GameState(float timePerTurn, TileActor ref) {
-        this.timePerTurn = timePerTurn;
+    public GameState() {
+        TileActor ref = TileActorFactory.generate(Tile.random(), TriCoords.LEFT);
         int gridSize = 8;
         this.coordinates = new CoordinateGrid((int) ref.getWidth(),
                                               (int) ref.getHeight(),

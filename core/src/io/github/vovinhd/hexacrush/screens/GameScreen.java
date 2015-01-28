@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.vovinhd.hexacrush.graphics.HexaCrushStage;
 import io.github.vovinhd.hexacrush.graphics.TileActor;
 import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
 import io.github.vovinhd.hexacrush.simulation.GameState;
@@ -22,31 +23,27 @@ public class GameScreen extends ScreenAdapter {
 
     private GameState gameState;
     private TriGrid triGrid;
-    private Stage stage;
+    private HexaCrushStage stage;
 
     @Override
     public void show() {
         viewport = new ScreenViewport();
         batch = new SpriteBatch();
-        stage = new Stage(viewport,batch);
+        stage = new HexaCrushStage(viewport,batch);
 
         //TODO decide which asset size to use
         TileActor ref =  TileActorFactory.generate(Tile.RED, TriCoords.LEFT);
 
         stage.addActor(ref);
 
-        gameState = new GameState(15, ref);
+        gameState = new GameState();
 
         //Setup Screen/UI
 
 
 
         //fill field
-        triGrid = new TriGrid(gameState.getCoordinates());
-        for (TileActor t : triGrid.getTris()) {
-            Gdx.app.log("Actor","x: " + t.getX() + " y: " + t.getY() );
-            stage.addActor(t);
-        }
+
 
         Gdx.input.setInputProcessor(stage);
     }
