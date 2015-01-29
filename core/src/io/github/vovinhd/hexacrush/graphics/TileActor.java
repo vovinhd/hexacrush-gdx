@@ -19,6 +19,7 @@ public class TileActor extends Actor {
     public TileActor(Sprite sprite) {
         this.tileSprite = new Sprite(sprite);
         this.setSize(tileSprite.getWidth(), tileSprite.getHeight());
+        this.setOrigin(this.getWidth()/2, this.getHeight()/2);
         this.addListener(new TileActorGestureListener());
     }
 
@@ -50,7 +51,9 @@ public class TileActor extends Actor {
 */
     @Override
     public void draw(Batch batch, float parentAlpha) {
+        //TODO put in more appropriate place, so it doesn't fire each frame even if the Actor isn't changed
         tileSprite.setScale(getScaleX(), getScaleY());
+        tileSprite.setPosition(getX(), getY());
         tileSprite.draw(batch);
     }
 

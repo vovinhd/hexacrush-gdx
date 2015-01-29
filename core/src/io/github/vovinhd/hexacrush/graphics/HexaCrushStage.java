@@ -26,6 +26,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class HexaCrushStage extends Stage {
 
+    private final Vector2 VERTICAL = new Vector2(0,1);
+    private final Vector2 RISING = new Vector2(1,0).rotate(30);
+    private final Vector2 FALLING = new Vector2(1,0).rotate(-30);
     //Services
     AssetService assetService = AssetService.getInstance();
 
@@ -36,12 +39,12 @@ public class HexaCrushStage extends Stage {
 
     //Other scene objects
     private Sprite fieldBackground;
-    private Group tiles;
     private TileActor focused;
     private TileActor nullTile;
 
     private GameState gameState;
     private TriGrid triGrid;
+    private Group focusedRow;
 
     //random junk
     private Vector2 touchDownAt;
@@ -57,14 +60,11 @@ public class HexaCrushStage extends Stage {
 
         nullTile = new NullTileActor(); // NullObject
         focused = nullTile;
-        tiles = new Group() {
-            public void bringToFront(Actor actor) {
 
-            }
-        };
         triGrid = new TriGrid(gameState.getCoordinates());
+        focusedRow = new Group();
 
-
+        this.addActor(focusedRow);
         this.addActor(nullTile);
         this.addActor(triGrid);
 
@@ -77,8 +77,43 @@ public class HexaCrushStage extends Stage {
     }
 
     protected void select(Vector2 line, Vector2 origin) {
+        double lineAngle = line.angle();
+        Gdx.app.log(this.getClass().getSimpleName() + " lineAngle", Double.toString(lineAngle));
+        selectRising();
+    }
 
+    private void  selectColumn () {
+        for(Actor t : triGrid.getChildren()) {
+            if (t.getX() == focused.getX()) {
+                focusedRow.addActor(t);
+            }
+        }
+    }
 
+    private void selectRising () {
+        Gdx.app.log(this.getClass().getSimpleName() + " RISING", Double.toString(RISING.angle()));
+
+        for(Actor t : triGrid.getChildren()) {
+            Vector2 positionT = new Vector2(t.getX(), t.getY());
+            Vector2 positionFocused = new Vector2(focused.getX(), focused.getY());
+
+            Vector2 conn = positionT.sub(positionFocused);
+            Gdx.app.log(this.getClass().getSimpleName() + " conn ", conn.toString() + " angle: " + conn.angle() + " difference: " + (conn.angle() - RISING.angle()));
+
+            if (conn.isOnLine(RISING, 30f)) {
+                t.setVisible(false);
+                focusedRow.addActor(t);
+            }
+        }
+    }
+
+    private void selecFalling () {
+
+    }
+
+    private enum Direction {
+        POSITIVE,
+        NEGATIVE
     }
 
     protected void focus(TileActor actor) {
@@ -98,6 +133,8 @@ public class HexaCrushStage extends Stage {
 
     }
 
+
+
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 screenCoords = new Vector2(screenX,screenY);
@@ -111,8 +148,6 @@ public class HexaCrushStage extends Stage {
             return true;
         }
     }
-
-
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
