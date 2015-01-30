@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -14,7 +13,7 @@ import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
 import io.github.vovinhd.hexacrush.simulation.GameState;
 import io.github.vovinhd.hexacrush.simulation.Tile;
 import io.github.vovinhd.hexacrush.simulation.TriCoords;
-import io.github.vovinhd.hexacrush.simulation.TriGrid;
+import io.github.vovinhd.hexacrush.graphics.TriGrid;
 
 public class GameScreen extends ScreenAdapter {
 

@@ -3,22 +3,30 @@ package io.github.vovinhd.hexacrush.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.vovinhd.hexacrush.service.AssetService;
-import io.github.vovinhd.hexacrush.simulation.CoordinateGrid;
 import io.github.vovinhd.hexacrush.simulation.GameState;
-import io.github.vovinhd.hexacrush.simulation.TriGrid;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -58,6 +66,15 @@ public class HexaCrushStage extends Stage {
         menuButton = new ImageButton(menuDrawable,menuDownDrawable);
         menuButton.setPosition(0, Gdx.graphics.getHeight() - menuButton.getHeight());
 
+        menuButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                for(Actor a : triGrid.getChildren()) {
+                    a.setVisible(true);
+                }
+            }
+        });
+
         nullTile = new NullTileActor(); // NullObject
         focused = nullTile;
 
@@ -79,7 +96,7 @@ public class HexaCrushStage extends Stage {
     protected void select(Vector2 line, Vector2 origin) {
         double lineAngle = line.angle();
         Gdx.app.log(this.getClass().getSimpleName() + " lineAngle", Double.toString(lineAngle));
-        selectRising();
+        selecFalling();
     }
 
     private void  selectColumn () {
@@ -96,11 +113,18 @@ public class HexaCrushStage extends Stage {
         for(Actor t : triGrid.getChildren()) {
             Vector2 positionT = new Vector2(t.getX(), t.getY());
             Vector2 positionFocused = new Vector2(focused.getX(), focused.getY());
+            Vector2 lineSegment = positionFocused.add(RISING);
 
             Vector2 conn = positionT.sub(positionFocused);
             Gdx.app.log(this.getClass().getSimpleName() + " conn ", conn.toString() + " angle: " + conn.angle() + " difference: " + (conn.angle() - RISING.angle()));
 
-            if (conn.isOnLine(RISING, 30f)) {
+
+            Polygon bounds = new Polygon();
+            bounds.setVertices(new float[] {t.getX(Align.bottomLeft), t.getY(Align.bottomLeft),
+                                            t.getX(Align.bottomRight), t.getY(Align.bottomRight),
+                                            t.getX(Align.topRight), t.getY(Align.topRight),
+                                            t.getX(Align.topLeft), t.getY(Align.topRight)});
+            if (Intersector.intersectLinePolygon(positionFocused, lineSegment, bounds)) {
                 t.setVisible(false);
                 focusedRow.addActor(t);
             }
@@ -108,7 +132,19 @@ public class HexaCrushStage extends Stage {
     }
 
     private void selecFalling () {
+        Gdx.app.log(this.getClass().getCanonicalName(), "actor: " + focused.toString());
 
+        if (focused instanceof NullTileActor) return;
+
+        for (TileActor t : focused.falling) {
+            Gdx.app.log(this.getClass().getCanonicalName(), "selected: " + t.toString());
+
+            ScaleByAction zoomAction = Actions.scaleBy(1.2f,1.2f,0.1f);
+            t.addAction(zoomAction);
+
+            t.toFront();
+
+        }
     }
 
     private enum Direction {
@@ -123,9 +159,8 @@ public class HexaCrushStage extends Stage {
         } else {
             focused.setScale(1, 1);
             actor.toFront();
-            ScaleByAction zoomAction = new ScaleByAction();
-            zoomAction.setAmount(1.2f);
-            zoomAction.setDuration(0.1f);
+            Action zoomAction = Actions.sequence(Actions.scaleTo(1.2f,1.2f,0.1f), Actions.scaleTo(1f,1f));
+
             actor.addAction(zoomAction);
             focused = actor;
         }

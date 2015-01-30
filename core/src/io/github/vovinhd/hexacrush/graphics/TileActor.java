@@ -15,6 +15,12 @@ public class TileActor extends Actor {
     private Sprite tileSprite;
     private boolean flip = false;
 
+    protected Array<TileActor> column;
+    protected Array<TileActor> rising;
+    protected Array<TileActor> falling;
+
+
+
     protected TileActor() { this.setVisible(false);};
     public TileActor(Sprite sprite) {
         this.tileSprite = new Sprite(sprite);
@@ -83,6 +89,37 @@ public class TileActor extends Actor {
 
     }
 
+    @Override
+    public String toString() {
+
+        StringBuilder s = new StringBuilder();
+        s.append(getClass().getSimpleName());
+        s.append("Location:");
+
+        s.append(getOriginX());
+        s.append(getOriginY());
+
+        if(column != null) {
+            s.append("Column");
+            s.append(rising.size);
+            s.append(rising.indexOf(this, true));
+        }
+
+        if(rising != null) {
+            s.append("Rising");
+            s.append(rising.size);
+            s.append(rising.indexOf(this, true));
+        }
+
+        if(falling != null) {
+            s.append("falling");
+            s.append(rising.size);
+            s.append(rising.indexOf(this, true));
+
+        }
+
+        return s.toString();
+    }
 
     enum Actions {
         ScaleByAction

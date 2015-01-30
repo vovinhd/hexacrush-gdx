@@ -48,9 +48,9 @@ public class CoordinateGrid {
         int rCutoff = 2 * gridSize - lStart;
 
         for (int i = 0; i < gridSize + 1; i++) {
-            //fill current row
+            //fill current column
             for (int j = 0; j < gridSize; j++) {
-                TriPair pair = new TriPair();
+                TriPair pair = new TriPair(j,i);
 
                 xOffset += triWidth;
                 yOffset += triHeight / 2;
@@ -63,7 +63,7 @@ public class CoordinateGrid {
                 }
                 positions.add(pair);
             }
-            //shift row
+            //shift column
             xOffset = (int) offset.x;
             yOffset = (int) offset.y + i * triHeight;
         }
