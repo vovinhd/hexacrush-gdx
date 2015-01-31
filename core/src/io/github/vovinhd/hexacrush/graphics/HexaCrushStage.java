@@ -146,12 +146,19 @@ public class HexaCrushStage extends Stage {
     }
 
     private Direction dirForAngle(double dir) {
-        if ((120 <= dir && dir > 60) || (270 <= dir && dir > 210)) {
+        if ((120 >= dir && dir > 60) || (300 >= dir && dir > 240)) {
+            Gdx.app.log(getClass().getCanonicalName(), "COLUMN " + dir);
             return Direction.COLUMN;
-        } else if ((180 <= dir && dir > 120) || (300 <= dir && 240 > dir)) {
+        } else if ((180 >= dir && dir > 120)
+                || (360 >= dir && dir > 300)) {
+            Gdx.app.log(getClass().getCanonicalName(), "FALLING " + dir);
             return Direction.FALLING;
-        } else {
+        } else if ((60 >= dir && dir > 0) || (240 >= dir && dir > 180)) {
+            Gdx.app.log(getClass().getCanonicalName(), "RISING " + dir);
             return Direction.RISING;
+        } else {
+            Gdx.app.log(getClass().getCanonicalName(), "dirForAngleError " + dir);
+            return Direction.COLUMN;
         }
     }
 
