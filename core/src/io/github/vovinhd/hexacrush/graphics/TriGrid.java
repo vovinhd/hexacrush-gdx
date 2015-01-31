@@ -1,6 +1,7 @@
 package io.github.vovinhd.hexacrush.graphics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
@@ -44,20 +45,38 @@ public class TriGrid extends Group {
             TriCoords triR = triPair.getRight();
             if (triPair.getLeft() != null) {
                 addTileActor(triPair.getxCoord(), triPair.getyCoord(), triPair.getLeft());
+                Gdx.app.log(this.getClass().getSimpleName(), "Adding at coordinates: x: " + triPair.getxCoord() + " y:" + triPair.getyCoord() + " LEFT ");
+
             }
 
             if (triPair.getRight() != null) {
                 addTileActor(triPair.getxCoord(), triPair.getyCoord(), triPair.getRight());
+                Gdx.app.log(this.getClass().getSimpleName(), "Adding at coordinates: x: " + triPair.getxCoord() + " y:" + triPair.getyCoord() + " RIGHT " );
+
             }
+        }
+
+        Gdx.app.log("columns", columns.size + " ");
+        for(Array array : columns) {
+            Gdx.app.log("elements", array.size + " ");
+        }
+
+        Gdx.app.log("rising", columns.size + " ");
+        for(Array array : rising) {
+            Gdx.app.log("elements", array.size + " ");
+        }
+
+        Gdx.app.log("falling", columns.size + " ");
+        for(Array array : falling) {
+            Gdx.app.log("elements", array.size + " ");
         }
     }
 
     private void addTileActor(int x, int y, TriCoords coords) {
 
-
-
         TileActor actor = TileActorFactory.generate(Tile.random(), coords.getSide());
         actor.setPosition(coords.getX(), coords.getY());
+        actor.setGridLocation(new Vector2(x,y));
         addActor(actor);
         columns.get(x).add(actor);
         rising.get(y).add(actor);
@@ -66,21 +85,20 @@ public class TriGrid extends Group {
         actor.rising =  rising.get(y);
 
         if (coords.getSide() == TriCoords.LEFT) {
-            int z = x + y -4;
+            int z = x + y - 3;
             falling.get(z).add(actor);
             actor.falling =  falling.get(z);
-            Gdx.app.log(this.getClass().getSimpleName(), "x: " + x + " y: " + y + " z: " + z);
 
         } else {
-            int z = x + y - 5;
+            int z = x + y - 4;
             falling.get(z).add(actor);
             actor.falling =  falling.get(z);
-            Gdx.app.log(this.getClass().getSimpleName(), "x: " + x + " y: " + y + " z: " + z);
 
         }
 
 
     }
+
 
     private static Array<Array<TileActor>> initRow(int cap) {
         Array<Array<TileActor>> row = new Array<Array<TileActor>>(cap);

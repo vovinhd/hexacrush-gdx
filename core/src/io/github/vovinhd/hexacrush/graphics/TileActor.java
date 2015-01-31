@@ -3,6 +3,7 @@ package io.github.vovinhd.hexacrush.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,16 +13,15 @@ import com.badlogic.gdx.utils.Array;
 
 
 public class TileActor extends Actor {
-    private Sprite tileSprite;
-    private boolean flip = false;
-
     protected Array<TileActor> column;
     protected Array<TileActor> rising;
     protected Array<TileActor> falling;
+    protected Vector2 gridLocation;
+    private Sprite tileSprite;
+    private boolean flip = false;
 
+protected TileActor() { this.setVisible(false);}
 
-
-    protected TileActor() { this.setVisible(false);};
     public TileActor(Sprite sprite) {
         this.tileSprite = new Sprite(sprite);
         this.setSize(tileSprite.getWidth(), tileSprite.getHeight());
@@ -32,7 +32,9 @@ public class TileActor extends Actor {
     public TileActor(Sprite sprite, boolean flip) {
         this(sprite);
         this.flip = flip;
-    }
+    };
+
+
 /*
     @Override
     public void act(float delta) {
@@ -75,6 +77,14 @@ public class TileActor extends Actor {
         super.setSize(width, height);
     }
 
+    public Vector2 getGridLocation() {
+        return gridLocation;
+    }
+
+    public void setGridLocation(Vector2 gridLocation) {
+        this.gridLocation = gridLocation;
+    }
+
     public void flip() {
         flip = !flip;
         tileSprite.flip(flip, false);
@@ -91,34 +101,10 @@ public class TileActor extends Actor {
 
     @Override
     public String toString() {
-
-        StringBuilder s = new StringBuilder();
-        s.append(getClass().getSimpleName());
-        s.append("Location:");
-
-        s.append(getOriginX());
-        s.append(getOriginY());
-
-        if(column != null) {
-            s.append("Column");
-            s.append(rising.size);
-            s.append(rising.indexOf(this, true));
-        }
-
-        if(rising != null) {
-            s.append("Rising");
-            s.append(rising.size);
-            s.append(rising.indexOf(this, true));
-        }
-
-        if(falling != null) {
-            s.append("falling");
-            s.append(rising.size);
-            s.append(rising.indexOf(this, true));
-
-        }
-
-        return s.toString();
+        if (gridLocation != null)
+            return "TileActor at " + gridLocation.toString();
+        else
+            return super.toString();
     }
 
     enum Actions {

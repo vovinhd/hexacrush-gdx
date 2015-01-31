@@ -41,19 +41,24 @@ public class CoordinateGrid {
         int yOffset = (int) offset.y;
         int intersectHeight = triHeight / 2;
 
+        //MAGIC, DO NOT TOUCH
 
         int lStart = gridSize / 2;
         int rStart = 1 + gridSize / 2;
         int lCutoff = 2 * gridSize - rStart;
         int rCutoff = 2 * gridSize - lStart;
 
-        for (int i = 0; i < gridSize + 1; i++) {
+        for (int i = 1; i < gridSize + 1; i++) {
             //fill current column
+            xOffset = (int) offset.x;
+            yOffset = (int) offset.y + i * triHeight;
             for (int j = 0; j < gridSize; j++) {
-                TriPair pair = new TriPair(j,i);
+                TriPair pair = new TriPair(j,i-1);
 
                 xOffset += triWidth;
                 yOffset += triHeight / 2;
+
+
                 if (i + j >= lStart && i + j <= lCutoff) {
                     pair.setLeft(new TriCoords(xOffset, yOffset + intersectHeight, TriCoords.LEFT));
                 }
@@ -63,11 +68,10 @@ public class CoordinateGrid {
                 }
                 positions.add(pair);
             }
-            //shift column
-            xOffset = (int) offset.x;
-            yOffset = (int) offset.y + i * triHeight;
+
         }
 
+        //END MAGIC
         return positions;
     }
 

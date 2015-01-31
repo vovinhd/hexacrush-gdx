@@ -3,12 +3,7 @@ package io.github.vovinhd.hexacrush.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -19,10 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import io.github.vovinhd.hexacrush.service.AssetService;
@@ -45,6 +41,12 @@ public class HexaCrushStage extends Stage {
     private ProgressBar timerBar;
     private Label score, scoreLabel;
 
+    //TODO remove this
+    private ImageButton selectDirButton;
+    private Direction[] dirs = new Direction[] {Direction.COLUMN, Direction.FALLING, Direction.RISING};
+    private Direction dir;
+    private int dirPos = 0;
+
     //Other scene objects
     private Sprite fieldBackground;
     private TileActor focused;
@@ -66,11 +68,24 @@ public class HexaCrushStage extends Stage {
         menuButton = new ImageButton(menuDrawable,menuDownDrawable);
         menuButton.setPosition(0, Gdx.graphics.getHeight() - menuButton.getHeight());
 
+        dir = dirs[dirPos];
+        selectDirButton = new ImageButton(menuDownDrawable);
+        selectDirButton.setPosition(Gdx.graphics.getWidth() - selectDirButton.getWidth(), Gdx.graphics.getHeight() - selectDirButton.getHeight());
+        selectDirButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                dirPos = (dirPos + 1) % dirs.length;
+                dir = dirs[dirPos];
+                Gdx.app.log("DIR", dir.toString());
+            }
+        });
+
         menuButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 for(Actor a : triGrid.getChildren()) {
                     a.setVisible(true);
+                    a.setScale(1);
                 }
             }
         });
@@ -86,6 +101,7 @@ public class HexaCrushStage extends Stage {
         this.addActor(triGrid);
 
         this.addActor(menuButton);
+        this.addActor(selectDirButton);
     }
 
     public void setGameOptions() {
@@ -96,50 +112,38 @@ public class HexaCrushStage extends Stage {
     protected void select(Vector2 line, Vector2 origin) {
         double lineAngle = line.angle();
         Gdx.app.log(this.getClass().getSimpleName() + " lineAngle", Double.toString(lineAngle));
-        selecFalling();
-    }
-
-    private void  selectColumn () {
-        for(Actor t : triGrid.getChildren()) {
-            if (t.getX() == focused.getX()) {
-                focusedRow.addActor(t);
-            }
+        switch (dir) {
+            case COLUMN: selectColumn();
+                break;
+            case FALLING: selectFalling();
+                break;
+            case RISING: selectRising();
+                break;
+            default: Gdx.app.log("WAT", "no dir");
         }
     }
 
-    private void selectRising () {
-        Gdx.app.log(this.getClass().getSimpleName() + " RISING", Double.toString(RISING.angle()));
 
-        for(Actor t : triGrid.getChildren()) {
-            Vector2 positionT = new Vector2(t.getX(), t.getY());
-            Vector2 positionFocused = new Vector2(focused.getX(), focused.getY());
-            Vector2 lineSegment = positionFocused.add(RISING);
-
-            Vector2 conn = positionT.sub(positionFocused);
-            Gdx.app.log(this.getClass().getSimpleName() + " conn ", conn.toString() + " angle: " + conn.angle() + " difference: " + (conn.angle() - RISING.angle()));
-
-
-            Polygon bounds = new Polygon();
-            bounds.setVertices(new float[] {t.getX(Align.bottomLeft), t.getY(Align.bottomLeft),
-                                            t.getX(Align.bottomRight), t.getY(Align.bottomRight),
-                                            t.getX(Align.topRight), t.getY(Align.topRight),
-                                            t.getX(Align.topLeft), t.getY(Align.topRight)});
-            if (Intersector.intersectLinePolygon(positionFocused, lineSegment, bounds)) {
-                t.setVisible(false);
-                focusedRow.addActor(t);
-            }
-        }
+    private void selectFalling() {
+        selectRowFrom(focused.falling);
     }
 
-    private void selecFalling () {
+    private void selectRising() {
+        selectRowFrom(focused.rising);
+    }
+
+    private void selectColumn() {
+        selectRowFrom(focused.column);
+    }
+
+    private void selectRowFrom(Array<TileActor> array) {
         Gdx.app.log(this.getClass().getCanonicalName(), "actor: " + focused.toString());
 
         if (focused instanceof NullTileActor) return;
 
-        for (TileActor t : focused.falling) {
-            Gdx.app.log(this.getClass().getCanonicalName(), "selected: " + t.toString());
+        for (TileActor t : array) {
 
-            ScaleByAction zoomAction = Actions.scaleBy(1.2f,1.2f,0.1f);
+            ScaleByAction zoomAction = Actions.scaleBy(-0.8f,-0.8f,0.1f);
             t.addAction(zoomAction);
 
             t.toFront();
@@ -147,9 +151,12 @@ public class HexaCrushStage extends Stage {
         }
     }
 
+
     private enum Direction {
-        POSITIVE,
-        NEGATIVE
+        COLUMN,
+        RISING,
+        FALLING
+
     }
 
     protected void focus(TileActor actor) {
