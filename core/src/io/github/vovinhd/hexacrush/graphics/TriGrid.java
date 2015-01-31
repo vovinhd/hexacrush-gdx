@@ -2,12 +2,8 @@ package io.github.vovinhd.hexacrush.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-
-import io.github.vovinhd.hexacrush.graphics.TileActor;
-import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
 import io.github.vovinhd.hexacrush.simulation.CoordinateGrid;
 import io.github.vovinhd.hexacrush.simulation.Tile;
 import io.github.vovinhd.hexacrush.simulation.TriCoords;
@@ -21,7 +17,8 @@ public class TriGrid extends Group {
     private Array<Array<TileActor>> rising;
     private Array<Array<TileActor>> falling;
 
-    int gridSize;
+    private int gridSize;
+    private CoordinateGrid coordinateGrid;
 
     public TriGrid(CoordinateGrid coords) {
         gridSize = coords.getGridSize();
@@ -72,6 +69,14 @@ public class TriGrid extends Group {
         }
     }
 
+    private static Array<Array<TileActor>> initRow(int cap) {
+        Array<Array<TileActor>> row = new Array<Array<TileActor>>(cap);
+        for (int i = 0; i < cap; i++) {
+            row.add(new Array<TileActor>());
+        }
+        return row;
+    }
+
     private void addTileActor(int x, int y, TriCoords coords) {
 
         TileActor actor = TileActorFactory.generate(Tile.random(), coords.getSide());
@@ -99,13 +104,19 @@ public class TriGrid extends Group {
 
     }
 
-
-    private static Array<Array<TileActor>> initRow(int cap) {
-        Array<Array<TileActor>> row = new Array<Array<TileActor>>(cap);
-        for (int i = 0; i < cap; i++) {
-            row.add(new Array<TileActor>());
-        }
-        return row;
+    public CoordinateGrid getCoordinateGrid() {
+        return coordinateGrid;
     }
 
+    public void setCoordinateGrid(CoordinateGrid coordinateGrid) {
+        this.coordinateGrid = coordinateGrid;
+    }
+
+    public int getGridSize() {
+        return gridSize;
+    }
+
+    public void setGridSize(int gridSize) {
+        this.gridSize = gridSize;
+    }
 }

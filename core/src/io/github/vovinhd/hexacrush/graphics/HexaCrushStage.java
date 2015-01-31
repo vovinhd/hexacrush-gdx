@@ -4,26 +4,19 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import io.github.vovinhd.hexacrush.service.AssetService;
 import io.github.vovinhd.hexacrush.simulation.GameState;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by vovin on 28.01.15.
@@ -106,12 +99,13 @@ public class HexaCrushStage extends Stage {
 
     public void setGameOptions() {
         //TODO make Gamestate Configurable from the outside
-        throw new NotImplementedException();
     }
 
     protected void select(Vector2 line, Vector2 origin) {
+
         double lineAngle = line.angle();
-        Gdx.app.log(this.getClass().getSimpleName() + " lineAngle", Double.toString(lineAngle));
+        Gdx.app.log(this.getClass().getSimpleName() + "Line: " + line.toString() + " lineAngle", Double.toString(lineAngle));
+        Direction dir = dirForAngle(lineAngle);
         switch (dir) {
             case COLUMN: selectColumn();
                 break;
@@ -139,7 +133,7 @@ public class HexaCrushStage extends Stage {
     private void selectRowFrom(Array<TileActor> array) {
         Gdx.app.log(this.getClass().getCanonicalName(), "actor: " + focused.toString());
 
-        if (focused instanceof NullTileActor) return;
+        if (focused instanceof NullTileActor || array == null) return;
 
         for (TileActor t : array) {
 
@@ -151,22 +145,24 @@ public class HexaCrushStage extends Stage {
         }
     }
 
-
-    private enum Direction {
-        COLUMN,
-        RISING,
-        FALLING
-
+    private Direction dirForAngle(double dir) {
+        if ((120 <= dir && dir > 60) || (270 <= dir && dir > 210)) {
+            return Direction.COLUMN;
+        } else if ((180 <= dir && dir > 120) || (300 <= dir && 240 > dir)) {
+            return Direction.FALLING;
+        } else {
+            return Direction.RISING;
+        }
     }
 
     protected void focus(TileActor actor) {
-        if (actor == focused){  // we acutally want to compare memory addresses
+        if (actor == focused) {  // we acutally want to compare memory addresses
             actor.setScale(1, 1);
             focused = nullTile;
         } else {
             focused.setScale(1, 1);
             actor.toFront();
-            Action zoomAction = Actions.sequence(Actions.scaleTo(1.2f,1.2f,0.1f), Actions.scaleTo(1f,1f));
+            Action zoomAction = Actions.sequence(Actions.scaleTo(1.2f, 1.2f, 0.1f), Actions.scaleTo(1f, 1f));
 
             actor.addAction(zoomAction);
             focused = actor;
@@ -175,15 +171,14 @@ public class HexaCrushStage extends Stage {
 
     }
 
-
-
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector2 screenCoords = new Vector2(screenX,screenY);
-        Vector2 stageCoords = this.screenToStageCoordinates(screenCoords);
-        this.touchDownAt = screenCoords;
+        Vector2 screenCoords = new Vector2(screenX, screenY);
+        Vector2 stageCoords = screenToStageCoordinates(screenCoords); //mutates params; Madness
+        touchDownAt = stageCoords;
         Actor target = hit(stageCoords.x, stageCoords.y, true);
         if (target == null || !(target instanceof TileActor)) {
+            focus(nullTile);
             return super.touchDown(screenX, screenY, pointer, button);
         } else {
             focus((TileActor) target);
@@ -201,11 +196,14 @@ public class HexaCrushStage extends Stage {
 
         if(touchDownAt == null) return false;
 
-        Vector2 origin = touchDownAt;
-        Vector2 target = new Vector2(screenX,screenY);
-        Vector2 line = origin.sub(target);
 
-        select(origin,line);
+        Vector2 origin = touchDownAt;
+        Vector2 target = screenToStageCoordinates(new Vector2(screenX, screenY));
+        Vector2 line = new Vector2(target).sub(origin); // submutates the original vector2 for no apparent reason other than madness
+
+        Gdx.app.log(getClass().getSimpleName(), "touch down at " + touchDownAt.toString() + " touch up at" + target + " line: " + line.toString());
+
+        select(line, origin);
 
         touchDownAt = null;
         return super.touchUp(screenX, screenY, pointer, button);
@@ -217,5 +215,12 @@ public class HexaCrushStage extends Stage {
 
     public void setFocused(TileActor focused) {
         this.focused = focused;
+    }
+
+    private enum Direction {
+        COLUMN,
+        RISING,
+        FALLING
+
     }
 }
