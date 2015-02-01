@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import io.github.vovinhd.hexacrush.graphics.HexaCrushStage;
 import io.github.vovinhd.hexacrush.graphics.TileActor;
 import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
+import io.github.vovinhd.hexacrush.graphics.TriGrid;
+import io.github.vovinhd.hexacrush.input.HexaCrushStageTouchInputProcessor;
 import io.github.vovinhd.hexacrush.simulation.GameState;
 import io.github.vovinhd.hexacrush.simulation.Tile;
 import io.github.vovinhd.hexacrush.simulation.TriCoords;
-import io.github.vovinhd.hexacrush.graphics.TriGrid;
 
 public class GameScreen extends ScreenAdapter {
 
@@ -36,6 +36,7 @@ public class GameScreen extends ScreenAdapter {
         stage.addActor(ref);
 
         gameState = new GameState();
+        HexaCrushStageTouchInputProcessor hip = new HexaCrushStageTouchInputProcessor(stage);
 
         //Setup Screen/UI
 
@@ -44,7 +45,7 @@ public class GameScreen extends ScreenAdapter {
         //fill field
 
 
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(hip);
     }
     @Override
     public void render(float delta) {

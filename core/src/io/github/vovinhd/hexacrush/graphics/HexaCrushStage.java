@@ -4,9 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import io.github.vovinhd.hexacrush.input.Directions;
 import io.github.vovinhd.hexacrush.service.AssetService;
 import io.github.vovinhd.hexacrush.simulation.GameState;
 
@@ -36,8 +38,9 @@ public class HexaCrushStage extends Stage {
 
     //TODO remove this
     private ImageButton selectDirButton;
-    private Direction[] dirs = new Direction[] {Direction.COLUMN, Direction.FALLING, Direction.RISING};
-    private Direction dir;
+    private Directions[] dirs = new Directions[]{Directions.COLUMN, Directions.FALLING, Directions.RISING};
+    private Directions dir;
+    private Directions oldDir;
     private int dirPos = 0;
 
     //Other scene objects
@@ -47,7 +50,8 @@ public class HexaCrushStage extends Stage {
 
     private GameState gameState;
     private TriGrid triGrid;
-    private Group focusedRow;
+    private Group focusedGroup;
+    private Array<TileActor> focusedRow;
 
     //random junk
     private Vector2 touchDownAt;
@@ -87,9 +91,9 @@ public class HexaCrushStage extends Stage {
         focused = nullTile;
 
         triGrid = new TriGrid(gameState.getCoordinates());
-        focusedRow = new Group();
+        focusedGroup = new Group();
 
-        this.addActor(focusedRow);
+        this.addActor(focusedGroup);
         this.addActor(nullTile);
         this.addActor(triGrid);
 
@@ -101,119 +105,35 @@ public class HexaCrushStage extends Stage {
         //TODO make Gamestate Configurable from the outside
     }
 
-    protected void select(Vector2 line, Vector2 origin) {
+    public void moveRow(Array<TileActor> focusedRow, Vector2 line, Directions direction) {
+        for (TileActor t : focusedRow) {
+            focusedGroup.addActor(t);
+            focusedGroup.toFront();
+        }
 
-        double lineAngle = line.angle();
-        Gdx.app.log(this.getClass().getSimpleName() + "Line: " + line.toString() + " lineAngle", Double.toString(lineAngle));
-        Direction dir = dirForAngle(lineAngle);
-        switch (dir) {
-            case COLUMN: selectColumn();
+        Vector2 movement;
+        switch (direction) {
+            case COLUMN:
+                movement = project(VERTICAL, line);
                 break;
-            case FALLING: selectFalling();
+            case FALLING:
+                movement = project(FALLING, line);
                 break;
-            case RISING: selectRising();
+            case RISING:
+                movement = project(RISING, line);
                 break;
-            default: Gdx.app.log("WAT", "no dir");
-        }
-    }
-
-
-    private void selectFalling() {
-        selectRowFrom(focused.falling);
-    }
-
-    private void selectRising() {
-        selectRowFrom(focused.rising);
-    }
-
-    private void selectColumn() {
-        selectRowFrom(focused.column);
-    }
-
-    private void selectRowFrom(Array<TileActor> array) {
-        Gdx.app.log(this.getClass().getCanonicalName(), "actor: " + focused.toString());
-
-        if (focused instanceof NullTileActor || array == null) return;
-
-        for (TileActor t : array) {
-
-            ScaleByAction zoomAction = Actions.scaleBy(-0.8f,-0.8f,0.1f);
-            t.addAction(zoomAction);
-
-            t.toFront();
-
-        }
-    }
-
-    private Direction dirForAngle(double dir) {
-        if ((120 >= dir && dir > 60) || (300 >= dir && dir > 240)) {
-            Gdx.app.log(getClass().getCanonicalName(), "COLUMN " + dir);
-            return Direction.COLUMN;
-        } else if ((180 >= dir && dir > 120)
-                || (360 >= dir && dir > 300)) {
-            Gdx.app.log(getClass().getCanonicalName(), "FALLING " + dir);
-            return Direction.FALLING;
-        } else if ((60 >= dir && dir > 0) || (240 >= dir && dir > 180)) {
-            Gdx.app.log(getClass().getCanonicalName(), "RISING " + dir);
-            return Direction.RISING;
-        } else {
-            Gdx.app.log(getClass().getCanonicalName(), "dirForAngleError " + dir);
-            return Direction.COLUMN;
-        }
-    }
-
-    protected void focus(TileActor actor) {
-        if (actor == focused) {  // we acutally want to compare memory addresses
-            actor.setScale(1, 1);
-            focused = nullTile;
-        } else {
-            focused.setScale(1, 1);
-            actor.toFront();
-            Action zoomAction = Actions.sequence(Actions.scaleTo(1.2f, 1.2f, 0.1f), Actions.scaleTo(1f, 1f));
-
-            actor.addAction(zoomAction);
-            focused = actor;
+            default:
+                movement = new Vector2(0, 0);
         }
 
-
+        focusedGroup.setPosition(movement.x, movement.y);
     }
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector2 screenCoords = new Vector2(screenX, screenY);
-        Vector2 stageCoords = screenToStageCoordinates(screenCoords); //mutates params; Madness
-        touchDownAt = stageCoords;
-        Actor target = hit(stageCoords.x, stageCoords.y, true);
-        if (target == null || !(target instanceof TileActor)) {
-            focus(nullTile);
-            return super.touchDown(screenX, screenY, pointer, button);
-        } else {
-            focus((TileActor) target);
-            return true;
-        }
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return super.touchDragged(screenX, screenY, pointer);
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-
-        if(touchDownAt == null) return false;
-
-
-        Vector2 origin = touchDownAt;
-        Vector2 target = screenToStageCoordinates(new Vector2(screenX, screenY));
-        Vector2 line = new Vector2(target).sub(origin); // submutates the original vector2 for no apparent reason other than madness
-
-        Gdx.app.log(getClass().getSimpleName(), "touch down at " + touchDownAt.toString() + " touch up at" + target + " line: " + line.toString());
-
-        select(line, origin);
-
-        touchDownAt = null;
-        return super.touchUp(screenX, screenY, pointer, button);
+    private Vector2 project(Vector2 v, Vector2 u) {
+        Vector2 vNorm = new Vector2(v).nor();
+        u.dot(v);
+        u.scl(vNorm);
+        return u;
     }
 
     public TileActor getFocused() {
@@ -224,10 +144,4 @@ public class HexaCrushStage extends Stage {
         this.focused = focused;
     }
 
-    private enum Direction {
-        COLUMN,
-        RISING,
-        FALLING
-
-    }
 }

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleByAction;
@@ -107,6 +106,46 @@ protected TileActor() { this.setVisible(false);}
             return super.toString();
     }
 
+    public String printLocation() {
+        StringBuilder sb = new StringBuilder();
+        if (rising != null) {
+            sb.append("Rising: ").append(rising.indexOf(this, true)).append(" ");
+        }
+
+        if (falling != null) {
+            sb.append("Falling: ").append(falling.indexOf(this, true)).append(" ");
+        }
+
+        if (column != null) {
+            sb.append("Column: ").append(column.indexOf(this, true)).append(" ");
+        }
+        return sb.toString();
+    }
+
+    public Array<TileActor> getColumn() {
+        return column;
+    }
+
+    public void setColumn(Array<TileActor> column) {
+        this.column = column;
+    }
+
+    public Array<TileActor> getRising() {
+        return rising;
+    }
+
+    public void setRising(Array<TileActor> rising) {
+        this.rising = rising;
+    }
+
+    public Array<TileActor> getFalling() {
+        return falling;
+    }
+
+    public void setFalling(Array<TileActor> falling) {
+        this.falling = falling;
+    }
+
     enum Actions {
         ScaleByAction
 
@@ -126,6 +165,4 @@ protected TileActor() { this.setVisible(false);}
             super.pan(event, x, y, deltaX, deltaY);
         }
     }
-
-
 }
