@@ -30,6 +30,8 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
 
     private Vector2 touchDownAt;
 
+    private State state = State.FREE;
+
 
     public HexaCrushStageTouchInputProcessor(HexaCrushStage parent) {
         this.parent = parent;
@@ -52,6 +54,7 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
 
 
     public void focus(TileActor actor) {
+        if (actor == null) return;
         if (actor == focused) {  // we acutally want to compare memory addresses
             actor.setScale(1, 1);
             focused = null;
@@ -84,6 +87,7 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
         Actor target = parent.hit(stageCoords.x, stageCoords.y, true);
         if (target == null || !(target instanceof TileActor)) {
             focus(null);
+            state = State.ACTOR_SELECTED;
             return true;
         } else {
             focus((TileActor) target);
@@ -124,20 +128,9 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        /*
-        if(touchDownAt == null) return false;
-
-
-        Vector2 origin = touchDownAt;
-        Vector2 target = screenToStageCoordinates(new Vector2(screenX, screenY));
-        Vector2 line = new Vector2(target).sub(origin); // submutates the original vector2 for no apparent reason other than madness
-
-        Gdx.app.log(getClass().getSimpleName(), "touch down at " + touchDownAt.toString() + " touch up at" + target + " line: " + line.toString());
-
-        select(line, origin);
-
-        touchDownAt = null;
-        */
+        this.focused = null;
+        this.focusedRow = null;
+        parent.setFocusedGroup(new Group());
         return false;
     }
 
@@ -147,7 +140,6 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
         double lineAngle = line.angle();
         Gdx.app.log(this.getClass().getSimpleName() + "Line: " + line.toString() + " lineAngle", Double.toString(lineAngle));
         dir = dirForAngle(lineAngle); // oh sideeffects
-        Array<TileActor> array;
         switch (dir) {
             case COLUMN:
                 return selectColumn();
@@ -206,5 +198,11 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    private enum State {
+        FREE,
+        ACTOR_SELECTED,
+        ROW_SELECTED
     }
 }

@@ -144,4 +144,11 @@ public class HexaCrushStage extends Stage {
         this.focused = focused;
     }
 
+    public Group getFocusedGroup() {
+        return focusedGroup;
+    }
+
+    public void setFocusedGroup(Group focusedGroup) {
+        this.focusedGroup = focusedGroup;
+    }
 }
