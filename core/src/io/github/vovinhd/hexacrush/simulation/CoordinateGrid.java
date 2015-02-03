@@ -79,6 +79,16 @@ public class CoordinateGrid {
         return positions;
     }
 
+    public TriCoords getPosition(int x,int y,int side) {
+        //TODO what a waste of cycles, store positions in a more reasonable way
+        for (TriPair triPair : positions) {
+            if (triPair.getxCoord() == x && triPair.getyCoord() == y) {
+                return (side == TriCoords.LEFT) ? triPair.getLeft() : triPair.getRight();
+            }
+        }
+        return null;
+    }
+
     public void setPositions(Array<TriPair> positions) {
         this.positions = positions;
     }

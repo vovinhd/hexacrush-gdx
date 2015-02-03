@@ -3,6 +3,7 @@ package io.github.vovinhd.hexacrush.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -23,17 +24,14 @@ public class GameScreen extends ScreenAdapter {
     private GameState gameState;
     private TriGrid triGrid;
     private HexaCrushStage stage;
+    private OrthographicCamera camera;
 
     @Override
     public void show() {
-        viewport = new ScreenViewport();
+        camera = new OrthographicCamera(480,800);
+        viewport = new ScreenViewport(camera);
         batch = new SpriteBatch();
         stage = new HexaCrushStage(viewport,batch);
-
-        //TODO decide which asset size to use
-        TileActor ref =  TileActorFactory.generate(Tile.RED, TriCoords.LEFT);
-
-        stage.addActor(ref);
 
         gameState = new GameState();
         HexaCrushStageTouchInputProcessor hip = new HexaCrushStageTouchInputProcessor(stage);

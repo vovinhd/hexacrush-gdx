@@ -71,7 +71,7 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
 
             actor.addAction(zoomAction);
             focused = actor;
-            Gdx.app.log(getClass().getCanonicalName(), "Focused pos in grid: " + focused.printLocation());
+            //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "Focused pos in grid: " + focused.printLocation());
 
         }
 
@@ -105,13 +105,12 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
         Vector2 target = parent.screenToStageCoordinates(new Vector2(screenX, screenY));
         Vector2 line = new Vector2(target).sub(origin); // submutates the original vector2 for no apparent reason other than madness
 
-        if (line.len2() < 20) {
-            Gdx.app.log(getClass().getSimpleName(), "touch dragged for less than 20 units " + " line: " + line.toString() + " " + line.len2());
-
+        if (line.len2() < 100) {
+            //Gdx.app.log(((Object) this).getClass().getSimpleName(), "touch dragged for less than 20 units " + " line: " + line.toString() + " " + line.len2());
             return false;
         }
 
-        Gdx.app.log(getClass().getSimpleName(), "touch dragged at" + touchDownAt.toString() + " touch up at" + target + " line: " + line.toString());
+        //Gdx.app.log(((Object) this).getClass().getSimpleName(), "touch dragged at" + touchDownAt.toString() + " touch up at" + target + " line: " + line.toString());
 
         Array<TileActor> selectedNow = select(line, origin);
         if (oldDir == null) {
@@ -128,9 +127,6 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        this.focused = null;
-        this.focusedRow = null;
-        parent.setFocusedGroup(new Group());
         return false;
     }
 
@@ -138,7 +134,7 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
     protected Array<TileActor> select(Vector2 line, Vector2 origin) {
 
         double lineAngle = line.angle();
-        Gdx.app.log(this.getClass().getSimpleName() + "Line: " + line.toString() + " lineAngle", Double.toString(lineAngle));
+        Gdx.app.log(((Object) this).getClass().getSimpleName() + "Line: " + line.toString() + " lineAngle", Double.toString(lineAngle));
         dir = dirForAngle(lineAngle); // oh sideeffects
         switch (dir) {
             case COLUMN:
@@ -165,7 +161,7 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
     }
 
     private Array<TileActor> selectRowFrom(Array<TileActor> array) {
-        Gdx.app.log(this.getClass().getCanonicalName(), "actor: " + focused.toString());
+        Gdx.app.log(((Object) this).getClass().getCanonicalName(), "actor: " + focused.toString());
 
         if (focused instanceof NullTileActor || array == null) return null;
 
@@ -175,17 +171,17 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
 
     public Directions dirForAngle(double dir) {
         if ((120 >= dir && dir > 60) || (300 >= dir && dir > 240)) {
-            Gdx.app.log(getClass().getCanonicalName(), "COLUMN " + dir);
+            //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "COLUMN " + dir);
             return Directions.COLUMN;
         } else if ((180 >= dir && dir > 120)
                 || (360 >= dir && dir > 300)) {
-            Gdx.app.log(getClass().getCanonicalName(), "FALLING " + dir);
+            //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "FALLING " + dir);
             return Directions.FALLING;
         } else if ((60 >= dir && dir > 0) || (240 >= dir && dir > 180)) {
-            Gdx.app.log(getClass().getCanonicalName(), "RISING " + dir);
+            //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "RISING " + dir);
             return Directions.RISING;
         } else {
-            Gdx.app.log(getClass().getCanonicalName(), "dirForAngleError " + dir);
+            //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "dirForAngleError " + dir);
             return Directions.COLUMN;
         }
     }
@@ -205,4 +201,6 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
         ACTOR_SELECTED,
         ROW_SELECTED
     }
+
+
 }

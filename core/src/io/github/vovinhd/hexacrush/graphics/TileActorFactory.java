@@ -1,9 +1,9 @@
 package io.github.vovinhd.hexacrush.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import io.github.vovinhd.hexacrush.service.AssetService;
 import io.github.vovinhd.hexacrush.simulation.Tile;
 import io.github.vovinhd.hexacrush.simulation.TriCoords;
@@ -53,42 +53,62 @@ public class TileActorFactory {
 
         TileActorFactory instance = getInstance();
 
+        TileActor product; // TODO load different assets for different screen sizes
+
         if (side == TriCoords.LEFT) {
             switch (t) {
                 case RED:
-                    return new TileActor(new Sprite(instance.redTriFlop));
+                    product = new TileActor(new Sprite(instance.redTriFlop));
+                    break;
                 case YELLOW:
-                    return new TileActor(new Sprite(instance.yellowTriFlop));
+                    product = new TileActor(new Sprite(instance.yellowTriFlop));
+                    break;
                 case BLUE:
-                    return new TileActor(new Sprite(instance.blueTriFlop));
+                    product = new TileActor(new Sprite(instance.blueTriFlop));
+                    break;
                 case BLACK:
-                    return new TileActor(new Sprite(instance.blackTriFlop));
+                    product = new TileActor(new Sprite(instance.blackTriFlop));
+                    break;
                 case GREEN:
-                    return new TileActor(new Sprite(instance.greenTriFlop));
+                    product = new TileActor(new Sprite(instance.greenTriFlop));
+                    break;
                 case PURPLE:
-                    return new TileActor(new Sprite(instance.purpleTriFlop));
+                    product = new TileActor(new Sprite(instance.purpleTriFlop));
+                    break;
                 default:
                     return null;
             }
         } else {
             switch (t) {
                 case RED:
-                    return new TileActor(new Sprite(instance.redTri));
+                    product = new TileActor(new Sprite(instance.redTri));
+                    break;
                 case YELLOW:
-                    return new TileActor(new Sprite(instance.yellowTri));
+                    product = new TileActor(new Sprite(instance.yellowTri));
+                    break;
                 case BLUE:
-                    return new TileActor(new Sprite(instance.blueTri));
+                    product = new TileActor(new Sprite(instance.blueTri));
+                    break;
                 case BLACK:
-                    return new TileActor(new Sprite(instance.blackTri));
+                    product = new TileActor(new Sprite(instance.blackTri));
+                    break;
                 case GREEN:
-                    return new TileActor(new Sprite(instance.greenTri));
+                    product = new TileActor(new Sprite(instance.greenTri));
+                    break;
                 case PURPLE:
-                    return new TileActor(new Sprite(instance.purpleTri));
+                    product = new TileActor(new Sprite(instance.purpleTri));
+                    break;
                 default:
                     return null;
             }
         }
 
+        float width = Gdx.graphics.getWidth()/10;
+        float height = product.getHeight() * (width/product.getWidth());
+        product.setSize(width,height);
+
+
+        return product;
     }
 
 }

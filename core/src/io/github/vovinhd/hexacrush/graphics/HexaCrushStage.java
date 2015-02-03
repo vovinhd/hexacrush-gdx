@@ -125,15 +125,28 @@ public class HexaCrushStage extends Stage {
             default:
                 movement = new Vector2(0, 0);
         }
+        Gdx.app.log("HexaCrushStage", "move by: " + movement.toString());
+        if(movement.hasOppositeDirection(line)) {
+            focusedGroup.setPosition(-movement.x, -movement.y);
+        } else {
+            focusedGroup.setPosition(movement.x, movement.y);
 
-        focusedGroup.setPosition(movement.x, movement.y);
+        }
     }
 
     private Vector2 project(Vector2 v, Vector2 u) {
         Vector2 vNorm = new Vector2(v).nor();
         u.dot(v);
-        u.scl(vNorm);
-        return u;
+        Gdx.app.log("HexaCrushStage", "Projection: " + u.toString() + " " + u.len() );
+
+        return vNorm.scl(u.len());
+
+    }
+
+    private enum Bounds {
+        LOW_FALLING, HIGH_FALLING,
+        LOW_RISING, HIGH_RISING,
+        LOW_VERTICAL, HIGH_VERTICAL
     }
 
     public TileActor getFocused() {
