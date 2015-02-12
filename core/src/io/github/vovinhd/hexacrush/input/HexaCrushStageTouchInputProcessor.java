@@ -87,10 +87,10 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
         Actor target = parent.hit(stageCoords.x, stageCoords.y, true);
         if (target == null || !(target instanceof TileActor)) {
             focus(null);
-            state = State.ACTOR_SELECTED;
             return true;
         } else {
             focus((TileActor) target);
+            state = State.ACTOR_SELECTED;
             return true;
         }
     }
@@ -98,8 +98,7 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
 
-        if (touchDownAt == null || focused == null) return false;
-
+        //if (state != State.ACTOR_SELECTED) return false;
 
         Vector2 origin = touchDownAt;
         Vector2 target = parent.screenToStageCoordinates(new Vector2(screenX, screenY));
@@ -113,21 +112,32 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
         //Gdx.app.log(((Object) this).getClass().getSimpleName(), "touch dragged at" + touchDownAt.toString() + " touch up at" + target + " line: " + line.toString());
 
         Array<TileActor> selectedNow = select(line, origin);
+        //lock direction
         if (oldDir == null) {
             oldDir = dir;
         }
-        if (focusedRow != null) {
-            parent.moveRow(focusedRow, line, oldDir);
-        } else {
+
+        //select row if this is the first time
+        if (focusedRow == null) {
             focusedRow = selectedNow;
         }
+
+        //lock selected row
+        if (focusedRow == selectedNow) {
+            parent.moveRow(selectedNow, line, oldDir);
+        }
+        state = State.ROW_SELECTED;
 
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+        state = State.FREE;
+        oldDir = null;
+        focusedRow = null;
+        focus(null);
+        return true;
     }
 
 

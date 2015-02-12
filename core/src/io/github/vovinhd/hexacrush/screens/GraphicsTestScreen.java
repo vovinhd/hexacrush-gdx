@@ -10,16 +10,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
 import io.github.vovinhd.hexacrush.graphics.TileActor;
 import io.github.vovinhd.hexacrush.graphics.TileActorFactory;
 import io.github.vovinhd.hexacrush.simulation.Tile;
@@ -87,7 +82,6 @@ public class GraphicsTestScreen extends ScreenAdapter {
                 }
             }
 
-            ;
         });
 //       applyButton.setSize(400,100);
 //        applyButton.setCenterPosition(applyButton.getWidth()/2, applyButton.getHeight()/2);

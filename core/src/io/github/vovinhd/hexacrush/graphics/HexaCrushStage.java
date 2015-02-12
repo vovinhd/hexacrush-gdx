@@ -106,6 +106,10 @@ public class HexaCrushStage extends Stage {
     }
 
     public void moveRow(Array<TileActor> focusedRow, Vector2 line, Directions direction) {
+        for (Actor t : focusedGroup.getChildren()) {
+            this.addActor(t);
+        }
+        //focusedGroup.clearChildren();
         for (TileActor t : focusedRow) {
             focusedGroup.addActor(t);
             focusedGroup.toFront();
@@ -132,21 +136,16 @@ public class HexaCrushStage extends Stage {
             focusedGroup.setPosition(movement.x, movement.y);
 
         }
+        //TODO: call MoveResolver
     }
 
     private Vector2 project(Vector2 v, Vector2 u) {
         Vector2 vNorm = new Vector2(v).nor();
         u.dot(v);
-        Gdx.app.log("HexaCrushStage", "Projection: " + u.toString() + " " + u.len() );
+        Gdx.app.log("HexaCrushStage", "Projection: " + u.toString() + " " + u.len());
 
         return vNorm.scl(u.len());
 
-    }
-
-    private enum Bounds {
-        LOW_FALLING, HIGH_FALLING,
-        LOW_RISING, HIGH_RISING,
-        LOW_VERTICAL, HIGH_VERTICAL
     }
 
     public TileActor getFocused() {
@@ -163,5 +162,11 @@ public class HexaCrushStage extends Stage {
 
     public void setFocusedGroup(Group focusedGroup) {
         this.focusedGroup = focusedGroup;
+    }
+
+    private enum Bounds {
+        LOW_FALLING, HIGH_FALLING,
+        LOW_RISING, HIGH_RISING,
+        LOW_VERTICAL, HIGH_VERTICAL
     }
 }

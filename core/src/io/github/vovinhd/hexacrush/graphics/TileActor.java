@@ -31,31 +31,31 @@ protected TileActor() { this.setVisible(false);}
     public TileActor(Sprite sprite, boolean flip) {
         this(sprite);
         this.flip = flip;
-    };
-
-
-/*
-    @Override
-    public void act(float delta) {
-        Array<Action> actions = this.getActions();
-        for(Action action : actions) {
-
-            Actions actionType = Actions.valueOf(action.getClass().getSimpleName());
-            switch (actionType) {
-                case ScaleByAction:
-                    float scaleX = (((ScaleByAction) action).getAmountX());
-                    float scaleY = (((ScaleByAction) action).getAmountY());
-                    this.setScale(scaleX,scaleY);
-                    Gdx.app.log(getClass().getCanonicalName(), "Scale " + scaleX + " " + scaleY);
-
-                    break;
-                default: break;
-            }
-
-        }
-        super.act(delta);
     }
-*/
+
+
+    /*
+        @Override
+        public void act(float delta) {
+            Array<Action> actions = this.getActions();
+            for(Action action : actions) {
+
+                Actions actionType = Actions.valueOf(action.getClass().getSimpleName());
+                switch (actionType) {
+                    case ScaleByAction:
+                        float scaleX = (((ScaleByAction) action).getAmountX());
+                        float scaleY = (((ScaleByAction) action).getAmountY());
+                        this.setScale(scaleX,scaleY);
+                        Gdx.app.log(getClass().getCanonicalName(), "Scale " + scaleX + " " + scaleY);
+
+                        break;
+                    default: break;
+                }
+
+            }
+            super.act(delta);
+        }
+    */
     @Override
     public void draw(Batch batch, float parentAlpha) {
         //TODO put in more appropriate place, so it doesn't fire each frame even if the Actor isn't changed
