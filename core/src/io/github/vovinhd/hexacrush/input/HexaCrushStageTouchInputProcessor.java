@@ -19,10 +19,8 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
 
     private HexaCrushStage parent;
 
-    private Directions[] dirs = new Directions[]{Directions.COLUMN, Directions.FALLING, Directions.RISING};
     private Directions dir;
     private Directions oldDir;
-    private int dirPos = 0;
 
     private TileActor focused;
     private Array<TileActor> focusedRow;
@@ -104,7 +102,7 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
         Vector2 target = parent.screenToStageCoordinates(new Vector2(screenX, screenY));
         Vector2 line = new Vector2(target).sub(origin); // submutates the original vector2 for no apparent reason other than madness
 
-        if (line.len2() < 100) {
+        if (line.len2() < 2) {
             //Gdx.app.log(((Object) this).getClass().getSimpleName(), "touch dragged for less than 20 units " + " line: " + line.toString() + " " + line.len2());
             return false;
         }
@@ -147,11 +145,17 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
         Gdx.app.log(((Object) this).getClass().getSimpleName() + "Line: " + line.toString() + " lineAngle", Double.toString(lineAngle));
         dir = dirForAngle(lineAngle); // oh sideeffects
         switch (dir) {
-            case COLUMN:
+            case COLUMN_NEG:
                 return selectColumn();
-            case FALLING:
+            case COLUMN_POS:
+                return selectColumn();
+            case FALLING_NEG:
                 return selectFalling();
-            case RISING:
+            case FALLING_POS:
+                return selectFalling();
+            case RISING_NEG:
+                return selectRising();
+            case RISING_POS:
                 return selectRising();
         }
         return null;
@@ -180,19 +184,24 @@ public class HexaCrushStageTouchInputProcessor implements InputProcessor {
     }
 
     public Directions dirForAngle(double dir) {
-        if ((120 >= dir && dir > 60) || (300 >= dir && dir > 240)) {
+        if (120 >= dir && dir > 60){
             //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "COLUMN " + dir);
-            return Directions.COLUMN;
-        } else if ((180 >= dir && dir > 120)
-                || (360 >= dir && dir > 300)) {
+            return Directions.COLUMN_POS;
+        } else if (300 >= dir && dir > 240) {
+            return Directions.COLUMN_NEG;
+        } else if (180 >= dir && dir > 120) {
             //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "FALLING " + dir);
-            return Directions.FALLING;
-        } else if ((60 >= dir && dir > 0) || (240 >= dir && dir > 180)) {
+            return Directions.FALLING_POS;
+        }else if (360 >= dir && dir > 300) {
+            return Directions.FALLING_NEG;
+        } else if (60 >= dir && dir > 0) {
+            return Directions.RISING_POS;
+        } else if ( (240 >= dir && dir > 180)) {
             //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "RISING " + dir);
-            return Directions.RISING;
+            return Directions.RISING_NEG;
         } else {
             //Gdx.app.log(((Object) this).getClass().getCanonicalName(), "dirForAngleError " + dir);
-            return Directions.COLUMN;
+            return Directions.COLUMN_POS;
         }
     }
 

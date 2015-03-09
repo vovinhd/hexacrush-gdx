@@ -1,4 +1,4 @@
-package io.github.vovinhd.hexacrush.GameLogic;
+package io.github.vovinhd.hexacrush.gamelogic;
 
 import io.github.vovinhd.hexacrush.graphics.HexaCrushStage;
 

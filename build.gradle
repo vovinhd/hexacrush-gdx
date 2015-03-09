@@ -15,7 +15,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'HexaCrush'
-        gdxVersion = '1.5.4-SNAPSHOT'
+        gdxVersion = '1.5.4'
         roboVMVersion = '0.0.14'
     }
 

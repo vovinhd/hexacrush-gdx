@@ -25,6 +25,8 @@ import io.github.vovinhd.hexacrush.simulation.GameState;
  */
 public class HexaCrushStage extends Stage {
 
+    //TODO remove UI from this
+
     private final Vector2 VERTICAL = new Vector2(0,1);
     private final Vector2 RISING = new Vector2(1,0).rotate(30);
     private final Vector2 FALLING = new Vector2(1,0).rotate(-30);
@@ -36,12 +38,6 @@ public class HexaCrushStage extends Stage {
     private ProgressBar timerBar;
     private Label score, scoreLabel;
 
-    //TODO remove this
-    private ImageButton selectDirButton;
-    private Directions[] dirs = new Directions[]{Directions.COLUMN, Directions.FALLING, Directions.RISING};
-    private Directions dir;
-    private Directions oldDir;
-    private int dirPos = 0;
 
     //Other scene objects
     private Sprite fieldBackground;
@@ -65,17 +61,7 @@ public class HexaCrushStage extends Stage {
         menuButton = new ImageButton(menuDrawable,menuDownDrawable);
         menuButton.setPosition(0, Gdx.graphics.getHeight() - menuButton.getHeight());
 
-        dir = dirs[dirPos];
-        selectDirButton = new ImageButton(menuDownDrawable);
-        selectDirButton.setPosition(Gdx.graphics.getWidth() - selectDirButton.getWidth(), Gdx.graphics.getHeight() - selectDirButton.getHeight());
-        selectDirButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                dirPos = (dirPos + 1) % dirs.length;
-                dir = dirs[dirPos];
-                Gdx.app.log("DIR", dir.toString());
-            }
-        });
+
 
         menuButton.addListener(new ClickListener() {
             @Override
@@ -98,7 +84,6 @@ public class HexaCrushStage extends Stage {
         this.addActor(triGrid);
 
         this.addActor(menuButton);
-        this.addActor(selectDirButton);
     }
 
     public void setGameOptions() {
@@ -117,13 +102,22 @@ public class HexaCrushStage extends Stage {
 
         Vector2 movement;
         switch (direction) {
-            case COLUMN:
+            case COLUMN_NEG:
                 movement = project(VERTICAL, line);
                 break;
-            case FALLING:
+            case COLUMN_POS:
+                movement = project(VERTICAL, line);
+                break;
+            case FALLING_NEG:
                 movement = project(FALLING, line);
                 break;
-            case RISING:
+            case FALLING_POS:
+                movement = project(FALLING, line);
+                break;
+            case RISING_NEG:
+                movement = project(RISING, line);
+                break;
+            case RISING_POS:
                 movement = project(RISING, line);
                 break;
             default:
